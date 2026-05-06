@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=1280"/>
+<title>UC Native Offer Asset Generator</title>
+
+<!-- Code-referenced resources (lifted to window.__resources for standalone bundling) -->
+<meta name="ext-resource-dependency" content="assets/banks/axis.png" data-resource-id="bankAxis" />
+<meta name="ext-resource-dependency" content="assets/banks/hdfc.png" data-resource-id="bankHdfc" />
+<meta name="ext-resource-dependency" content="assets/banks/hsbc.png" data-resource-id="bankHsbc" />
+<meta name="ext-resource-dependency" content="assets/banks/yes.png"  data-resource-id="bankYes" />
+<meta name="ext-resource-dependency" content="assets/exchange-small.svg" data-resource-id="exchangeSmall" />
+<meta name="ext-resource-dependency" content="assets/sameday-small.svg" data-resource-id="samedaySmall" />
+<meta name="ext-resource-dependency" content="assets/merch.svg" data-resource-id="merch" />
+<meta name="ext-resource-dependency" content="assets/exchange-big.svg" data-resource-id="exchangeBig" />
+<meta name="ext-resource-dependency" content="assets/sameday-big.svg" data-resource-id="samedayBig" />
+<meta name="ext-resource-dependency" content="assets/native-logo.svg" data-resource-id="nativeLogo" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  /* Brand font — Open Sauce One */
+  @font-face { font-family: 'Open Sauce One'; src: url('assets/fonts/OpenSauceOne-Light.ttf')     format('truetype'); font-weight: 300; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Open Sauce One'; src: url('assets/fonts/OpenSauceOne-Regular.ttf')   format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Open Sauce One'; src: url('assets/fonts/OpenSauceOne-Italic.ttf')    format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+  @font-face { font-family: 'Open Sauce One'; src: url('assets/fonts/OpenSauceOne-Medium.ttf')    format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Open Sauce One'; src: url('assets/fonts/OpenSauceOne-SemiBold.ttf')  format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Open Sauce One'; src: url('assets/fonts/OpenSauceOne-Bold.ttf')      format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Open Sauce One'; src: url('assets/fonts/OpenSauceOne-ExtraBold.ttf') format('truetype'); font-weight: 800; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Open Sauce One'; src: url('assets/fonts/OpenSauceOne-Black.ttf')     format('truetype'); font-weight: 900; font-style: normal; font-display: swap; }
+
+  /* Open Sauce One isn't on Google Fonts — fall back through Open Sans / system. */
+  :root {
+    --bg: #FAFAF8;
+    --surface: #FFFFFF;
+    --border: #E5E5E2;
+    --ink: #0F0F0F;
+    --ink-2: #262626;
+    --muted: #545454;
+    --muted-2: #9aa0a6;
+    --accent: #F45A00;
+    --accent-2: #FF6F1A;
+    --green: #05945B;
+    --green-d: #07794C;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); }
+  body {
+    font-family: 'Open Sauce One', 'Open Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--ink);
+    font-weight: 700;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  #root { min-height: 100vh; }
+
+  .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+  .topbar {
+    height: 56px; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: #0F0F0F; border-bottom: 1px solid #0F0F0F;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-logo {
+    font-size: 16px; font-weight: 800; letter-spacing: -0.2px;
+  }
+  .brand-divider {
+    width: 1px; height: 18px; background: rgba(255,255,255,0.2);
+  }
+  .brand-tool { font-size: 14px; color: #fff; font-weight: 500; }
+  .topbar-meta { font-size: 12px; color: rgba(255,255,255,0.6); }
+
+  .main {
+    flex: 1; display: grid;
+    grid-template-columns: 380px 1fr; min-height: 0;
+  }
+
+  /* LEFT panel */
+  .panel {
+    background: #fff; border-right: 1px solid var(--border);
+    padding: 24px; overflow-y: auto; max-height: calc(100vh - 56px);
+  }
+  .panel-title {
+    margin: 0 0 4px; font-size: 18px; font-weight: 700; color: var(--ink);
+  }
+  .panel-sub {
+    margin: 0 0 22px; font-size: 13px; color: var(--muted-2);
+  }
+  .section { margin-bottom: 4px; }
+  .section-label {
+    text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px;
+    font-weight: 700; color: var(--muted-2); margin-bottom: 12px;
+  }
+  .divider { height: 1px; background: var(--border); margin: 6px 0 22px; }
+
+  .summary {
+    background: #FAFAF8; border-radius: 10px; padding: 14px 16px;
+    margin-bottom: 18px;
+  }
+  .summary-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; color: var(--muted); padding: 4px 0;
+    font-family: 'Open Sauce One', 'Open Sans', sans-serif;
+  }
+  .summary-row.total {
+    margin-top: 6px; padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    color: var(--ink); font-weight: 700; font-size: 14px;
+  }
+
+  .download-btn {
+    width: 100%; height: 44px; border: none; border-radius: 8px;
+    background: var(--ink); color: #fff;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 8px; transition: background .12s, transform .06s;
+  }
+  .download-btn:hover:not(.disabled):not(:disabled) { background: #000; }
+  .download-btn:active:not(.disabled):not(:disabled) { transform: scale(0.99); }
+  .download-btn.disabled, .download-btn:disabled {
+    background: #E5E5E2; color: var(--muted-2); cursor: not-allowed;
+  }
+  .export-note {
+    text-align: center; font-size: 11px; color: var(--muted-2); margin-top: 8px;
+  }
+  .spinner {
+    width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RIGHT preview */
+  .preview-area {
+    display: flex; flex-direction: column; min-height: 0;
+    background: var(--bg);
+  }
+  .preview-header {
+    padding: 18px 28px; display: flex; justify-content: space-between;
+    align-items: center; border-bottom: 1px solid var(--border);
+    background: #fff;
+  }
+  .preview-label { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .preview-meta { font-size: 12px; color: var(--muted-2); margin-top: 2px; }
+  .preview-chips { display: flex; gap: 8px; }
+  .chip {
+    padding: 4px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.4px;
+    background: rgba(244,90,0,0.08); color: var(--accent);
+    text-transform: uppercase;
+  }
+  .chip-product {
+    background: #F2F2F0; color: var(--ink-2); letter-spacing: 0;
+  }
+
+  .canvas-bg {
+    flex: 1; position: relative; overflow: auto;
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px;
+  }
+  .canvas-grid {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      radial-gradient(circle, #D8D8D2 1px, transparent 1px);
+    background-size: 16px 16px;
+    opacity: 0.5;
+  }
+  .canvas-stage {
+    position: relative; z-index: 1;
+    box-shadow: 0 24px 60px -20px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.08);
+    border-radius: 4px; overflow: hidden;
+  }
+  .asset-frame {
+    /* the actual exported asset frame */
+  }
+
+  .toast {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    padding: 10px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    z-index: 5;
+  }
+  .toast-ok  { background: #05945B; color: #fff; }
+  .toast-err { background: #D63838; color: #fff; }
+
+  /* form input number arrow cleanup */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none; margin: 0;
+  }
+  input[type=number] { -moz-appearance: textfield; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/html-to-image@1.11.13/dist/html-to-image.js"></script>
+  <script type="text/babel" src="app.standalone.jsx"></script>
+
+  <template id="__bundler_thumbnail" data-bg-color="#0F0F0F">
+    <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+      <rect width="600" height="400" fill="#0F0F0F"/>
+      <g transform="translate(170, 165)">
+        <text x="0" y="45" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="700" letter-spacing="2">NATIVE</text>
+        <path d="M0 70 C 50 60, 180 60, 260 75" stroke="#F45A00" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </template>
+</body>
+</html>
