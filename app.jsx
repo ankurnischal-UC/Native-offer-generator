@@ -608,6 +608,9 @@ const HSSpotlightLock = ({ discount, frameRef }) => (
   </div>
 );
 
+// ─── Automation bridge (Cowork / headless control) ───────────────────
+window.__offerGen = { setValues: null, triggerDownload: null };
+
 const App = () => {
   const [assetType, setAssetType] = useState("detail");
   const [hsProduct, setHsProduct] = useState("ro");
@@ -623,6 +626,35 @@ const App = () => {
   const [exchangeValue, setExchangeValue] = useState("1000");
   const [downloading, setDownloading] = useState(false);
   const [toast, setToast] = useState(null);
+
+  // ─── Automation bridge — lets Cowork/headless scripts set state ──────
+  useEffect(() => {
+    window.__offerGen.setValues = ({
+      assetType, product, sellingPrice, combo,
+      bankPct, bankCap, selectedBanks,
+      merchValue, exchangeValue,
+      hsProduct, hsRoDiscount, hsLockDiscount,
+    }) => {
+      if (assetType      !== undefined) setAssetType(assetType);
+      if (product        !== undefined) setProduct(product);
+      if (sellingPrice   !== undefined) setSellingPrice(String(sellingPrice));
+      if (combo          !== undefined) setCombo(combo);
+      if (bankPct        !== undefined) setBankPct(String(bankPct));
+      if (bankCap        !== undefined) setBankCap(String(bankCap));
+      if (selectedBanks  !== undefined) setSelectedBanks(selectedBanks);
+      if (merchValue     !== undefined) setMerchValue(String(merchValue));
+      if (exchangeValue  !== undefined) setExchangeValue(String(exchangeValue));
+      if (hsProduct      !== undefined) setHsProduct(hsProduct);
+      if (hsRoDiscount   !== undefined) setHsRoDiscount(String(hsRoDiscount));
+      if (hsLockDiscount !== undefined) setHsLockDiscount(String(hsLockDiscount));
+    };
+
+    window.__offerGen.triggerDownload = () => {
+      const btn = document.querySelector('.download-btn:not(.disabled):not(:disabled)');
+      if (btn) btn.click();
+      else throw new Error('Download button not ready — check that all required fields are filled.');
+    };
+  }, []);
 
   const frameRef = useRef(null);
   const tpl = TEMPLATES.find(t => t.id === combo);
